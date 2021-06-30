@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Document</title>
+<!--    <script type=text/javascript src={{url_for('static', filename="jquery.min.js")}}></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.2/dist/jquery.table2excel.min.js"></script>
+<!--    <script type=text/javascript src={{url_for('static', filename="jquery.table2excel.min.js")}}></script>-->
+    <script type=text/javascript src={{url_for('static', filename="script.js")}}></script>
+
+<!--    <script src="/script.js"></script>-->
+
+    <style>
+        header div {
+            margin-top: 20px;
+            /* display: flex; */
+            display: flex;
+            background-color: white;
+            /* height: auto; */
+            align-items: center;
+            margin-left: 20vw;
+            margin-right: 20vw;
+            justify-content: space-between;
+            /* justify-content: center; */
+            /* background-color: black; */
+
+        }
+
+        .style_logo {
+            height: 2em;
+            margin-top: 10px;
+            margin-right: 1em;
+            /* background-color:wheat; */
+        }
+
+        .style_searchbox {
+            /* width: 50vw; */
+            width: 100ch;
+            height: 36px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px 0px 0px 10px;
+            box-shadow: 1px 1px 3px #666;
+            padding: 4px 7px;
+            outline: 0;
+            font-size: 1.05em;
+        }
+
+        .style_searchbox:focus {
+            border-color: rgb(30, 144, 255);
+        }
+
+        .style_image_button {
+            height: 36px;
+            width: 56px;
+            border: none;
+            border-radius: 0px 10px 10px 0px;
+            background-color: rgb(30, 144, 255);
+            color: white;
+            cursor: pointer;
+            transition: all 0.5s;
+            box-shadow: 1px 1px 3px #666;
+
+        }
+
+        .style_image_button:hover,
+        .style_image_button:disabled {
+            background-color: rgba(88, 134, 180, 0.8);
+            transition: all 0s ease;
+        }
+
+        .style_image_button:disabled {
+            cursor: default;
+        }
+
+        .style_table {
+            width: 59vw;
+            border-collapse: collapse;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .style_table thead tr {
+            background-color: rgb(30, 144, 255);
+            color: #ffffff;
+            text-align: left;
+
+        }
+
+        .style_table thead {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+        }
+
+        .style_table th,
+        .style_table td {
+            padding: 12px 12px;
+            text-align: left;
+        }
+
+        .style_table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .style_table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .style_table tbody tr:last-of-type {
+            border-bottom: 2px solid rgb(30, 144, 255);
+        }
+
+        section>div {
+            display: flex;
+            margin-left: 20vw;
+            margin-right: 20vw;
+            align-items: center;
+            justify-content: space-between;
+            /* background-color: tan; */
+        }
+
+        .table_container {
+            display: inline-block;
+            margin-top: 10px;
+            max-height: 70vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .selector {
+            display: flex;
+            /* margin-top: 20px; */
+            /* margin-left: auto; */
+            justify-content: space-between;
+            background-color: white;
+            width: 20ch;
+            /* padding: 0.5em 0.4em 0.5em 0.4em; */
+            border-radius: 5px;
+            box-shadow: 1px 1px 3px #666;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .selector_items {
+            width: 20ch;
+            margin-left: auto;
+            position: relative;
+            visibility: visible;
+
+        }
+
+        .selector_items_list {
+            list-style: none;
+            background-color: white;
+            width: 20ch;
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-right: auto;
+            margin-left: auto;
+            text-align: left;
+            overflow: hidden;
+            padding-left: 0;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            box-shadow: 1px 1px 3px #666;
+            border: 1px solid #ccc;
+            z-index: 1;
+            /* visibility: hidden; */
+        }
+
+        section div li {
+            /* width: 16ch; */
+            /* margin-left: 0.4em; */
+            padding: 0.4em 0.0em 0.4em 0.4em;
+            /* border-bottom: 1px solid #ccc; */
+            cursor: pointer;
+        }
+
+        section div li:hover {
+            background-color: whitesmoke;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid rgb(30, 144, 255);
+            width: 120px;
+            height: 120px;
+            margin: 20px;
+            /* -webkit-animation: spin 2s linear infinite; Safari */
+            animation: spin 2s linear infinite;
+            /* position: absolute; */
+            z-index: 1;
+            /* top: 50%; 
+             left: 45%; */
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader_container {
+            position: absolute;
+            z-index: 1;
+            display: table;
+            top: 40%;
+            left: 25%;
+            visibility: hidden;
+        }
+
+        .loader_text {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            width: 190px;
+            text-align: center;
+        }
+        .text_button{
+            border-radius: 5px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 3px #666;
+            width: 16ch;
+            height: 2.5em;
+            font-size: 0.9em;
+            cursor: pointer;
+
+        }
+        .text_button:active{
+            /* border: 1px solid rgb(30, 144, 255);; */
+            background-color: rgb(30, 144, 255);
+            color: white;
+            border: 0px;
+            box-shadow: 0px 0px 0px;
+        }
+
+        
+    </style>
+
+
+</head>
+
+<body>
+    <header>
+        <div>
+            <a href="https://flipkart.com"><img src={{url_for('static', filename = 'flip_logo.png')}} class="style_logo"
+                    style="filter: invert(50%);"></a>
+            <input id="input_search" type="search" placeholder="search product here" class="style_searchbox">
+            <button type="submit" class="style_image_button" onclick="buttonClickedSearch()" id="button_search"><i
+                    class="fa fa-search fa-lg"></i></button>
+        </div>
+
+    </header>
+    <section>
+        <!-- This div contains dropdown -->
+
+        <div style="margin-top: 20px;">
+            <span>
+                <button class="text_button" id="button_export">Export To Excel</button>
+            </span>
+            <span class="selector" id="selector_container">
+                <span style="padding: 0.5em" id="selector">Select Timeout</span>
+                <i class="fa fa-angle-down" style="padding: 0.5em"></i>
+            </span>
+        </div>
+
+
+
+        <div class="selector_items" id="selector_items">
+            <ul class="selector_items_list" id="timeout_list">
+                <li id="5">5 Sec</li>
+                <li id="10">10 Sec</li>
+                <li id="15">15 Sec</li>
+                <li id="20">20 Sec</li>
+                <li id="30">30 Sec</li>
+                <li id="45">45 Sec</li>
+                <li id="60">60 Sec</li>
+            </ul>
+        </div>
+
+
+        <div class="loader_container" id="loader">
+            <div class="loader"></div>
+            <div id="loading_text" class="loader_text"></div>
+        </div>
+
+        <!-- This div contains table -->
+        <div class="table_container" id="table_container">
+            <table id="product_table" class="style_table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Product Price</th>
+                        <th>Ratings out of 5</th>
+                        <th>No of Ratings</th>
+                        <th>Product Link on Flipkart.com</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+    <footer>
+
+    </footer>
+</body>
+
+</html>
